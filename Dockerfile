@@ -16,7 +16,7 @@ RUN cd backend && mkdir -p build && cd build \
     && make -j"$(nproc)" dispatch_server
 
 # ---- Runtime image (slim, no compiler) ----
-FROM debian:bookworm-slim
+FROM gcc:13
 
 WORKDIR /app
 COPY --from=build /app/backend/build/dispatch_server ./dispatch_server
