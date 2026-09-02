@@ -1,0 +1,20 @@
+# ---- Build outputs ----
+backend/build/
+backend/cmake-build-*/
+*.o
+*.obj
+*.exe
+*.out
+
+# ---- Generated persistence snapshots (regenerated on every run) ----
+data/*.json
+
+# ---- Editor / OS ----
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# ---- Logs ----
+*.log

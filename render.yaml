@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: smart-delivery-dispatch-backend
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /api/dashboard
+    envVars:
+      - key: PORT
+        value: 8080

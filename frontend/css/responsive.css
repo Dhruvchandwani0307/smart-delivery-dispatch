@@ -1,0 +1,109 @@
+/* ============================================================================
+   responsive.css
+   Breakpoints: 1200 / 992 / 768 / 576, chosen at the points where the
+   dispatch console's own layout actually breaks (6-col stat grid, 2-col
+   forms, data tables) rather than applied mechanically.
+   ============================================================================ */
+
+/* ---- ≤1200px: stat grid 6 -> 3 columns, dispatch center columns stack earlier ---- */
+@media (max-width: 1200px) {
+  .stat-grid { grid-template-columns: repeat(3, 1fr); }
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ---- ≤992px: rail becomes an off-canvas drawer ---- */
+@media (max-width: 992px) {
+  .rail {
+    transform: translateX(-100%);
+  }
+  .rail.open { transform: translateX(0); box-shadow: var(--shadow-pop); }
+  .rail-scrim.open { display: block; }
+  .main-col { margin-left: 0; }
+  .hamburger { display: inline-flex; }
+
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .dispatch-columns { grid-template-columns: 1fr !important; }
+  .search-box { min-width: 0; flex: 1; }
+}
+
+/* ---- ≤768px: tablet - 2-col cards, horizontally scrollable tables ---- */
+@media (max-width: 768px) {
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .grid-2, .grid-4, .grid-3 { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+
+  .page-content { padding: 18px 16px 48px; }
+  .topbar { padding: 0 16px; }
+  .topbar-title h1 { font-size: 16.5px; }
+
+  .card-header { padding: 14px 16px; }
+  .card-body { padding: 16px; }
+
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .data-table { min-width: 640px; }
+
+  .modal-box { max-width: 100%; }
+}
+
+/* ---- ≤576px: mobile - single column everything, cards instead of tables ---- */
+@media (max-width: 576px) {
+  .stat-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stat-card { padding: 13px 14px 12px; }
+  .stat-card .value { font-size: 22px; }
+
+  .topbar { height: 58px; gap: 10px; }
+  .topbar-actions .search-box { display: none; }
+  .brand-hide-mobile { display: none; }
+
+  .section-head { margin: 24px 0 12px; }
+  .section-head h2 { font-size: 14.5px; }
+
+  .btn { padding: 10px 14px; }
+  .chip-tabs { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px; }
+  .chip-tab { flex-shrink: 0; }
+
+  /* Data tables collapse into stacked "cards": each row becomes a block,
+     each cell shows its column label via data-label. */
+  .data-table.responsive-cards thead { display: none; }
+  .data-table.responsive-cards, .data-table.responsive-cards tbody, .data-table.responsive-cards tr { display: block; width: 100%; }
+  .data-table.responsive-cards tr {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    margin-bottom: 10px;
+    padding: 4px 4px;
+    background: var(--surface);
+  }
+  .data-table.responsive-cards td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border-bottom: 1px solid var(--line-soft);
+    padding: 9px 12px;
+    text-align: right;
+  }
+  .data-table.responsive-cards td:last-child { border-bottom: none; }
+  .data-table.responsive-cards td::before {
+    content: attr(data-label);
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-faint);
+    font-weight: 700;
+    text-align: left;
+  }
+
+  .modal-header, .modal-body, .modal-footer { padding-left: 16px; padding-right: 16px; }
+  .modal-footer { flex-direction: column-reverse; }
+  .modal-footer .btn { width: 100%; }
+
+  .toast-stack { left: 12px; right: 12px; top: 12px; max-width: none; }
+
+  .dispatch-columns { gap: 14px !important; }
+  .score-row { grid-template-columns: 74px 1fr 40px; }
+
+  .form-row { gap: 10px; }
+}
+
+/* Never allow page-breaking horizontal overflow regardless of breakpoint */
+html, body { max-width: 100%; }
