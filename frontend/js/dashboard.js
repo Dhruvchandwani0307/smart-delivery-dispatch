@@ -111,8 +111,18 @@ const AdminDashboard = (() => {
   }
 
   // ---- Orders table ------------------------------------------------------------
+  const NEXT_STAGE = {
+    PLACED: { to: 'CONFIRMED', label: 'Confirm Order' },
+    CONFIRMED: { to: 'PREPARING', label: 'Start Preparing' },
+    PREPARING: { to: 'READY', label: 'Mark Ready' },
+  };
+
   function orderActionsHtml(o) {
     const actions = [];
+    if (NEXT_STAGE[o.status]) {
+      const step = NEXT_STAGE[o.status];
+      actions.push(`<button class="btn btn-primary btn-sm" data-advance="${o.id}" data-to="${step.to}">${step.label}</button>`);
+    }
     if (o.status === 'READY') {
       actions.push(`<button class="btn btn-accent btn-sm" data-dispatch="${o.id}">Dispatch</button>`);
       actions.push(`<button class="btn btn-outline btn-sm" data-assign="${o.id}">Manual</button>`);
@@ -170,6 +180,7 @@ const AdminDashboard = (() => {
     wrap.querySelectorAll('[data-dispatch]').forEach(btn => btn.addEventListener('click', () => dispatchOrder(btn.dataset.dispatch)));
     wrap.querySelectorAll('[data-assign]').forEach(btn => btn.addEventListener('click', () => openAssignModal(btn.dataset.assign)));
     wrap.querySelectorAll('[data-cancel]').forEach(btn => btn.addEventListener('click', () => cancelOrder(btn.dataset.cancel)));
+    wrap.querySelectorAll('[data-advance]').forEach(btn => btn.addEventListener('click', () => advanceOrder(btn.dataset.advance, btn.dataset.to)));
   }
 
   function renderFilters() {
@@ -242,6 +253,14 @@ const AdminDashboard = (() => {
     try {
       const res = await Api.dispatchOrder(orderId);
       Utils.toast(res.dispatch.message, 'success');
+      await loadAll();
+    } catch (e) { Utils.toast(e.message, 'error'); }
+  }
+
+  async function advanceOrder(orderId, toStatus) {
+    try {
+      await Api.updateOrderStatus(orderId, toStatus);
+      Utils.toast(`Order ${orderId} moved to ${toStatus.replace('_', ' ')}`, 'success');
       await loadAll();
     } catch (e) { Utils.toast(e.message, 'error'); }
   }
